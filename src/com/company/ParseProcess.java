@@ -131,6 +131,6 @@ public class ParseProcess {
         service.shutdown();
     }
 
-    private Runnable task1= this::searchDuplicate;
-    private Runnable task2= this::displayCountHousesInEveryCity;
+    private Runnable task1 = this::searchDuplicate;
+    private Runnable task2 = this::displayCountHousesInEveryCity;
 }
