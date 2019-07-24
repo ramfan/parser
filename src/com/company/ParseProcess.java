@@ -5,6 +5,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -14,19 +15,21 @@ import java.util.concurrent.Executors;
 public class ParseProcess {
     private XMLStreamReader reader;
     private List<Item> itemList = new ArrayList<>();
+//    private Map<String, Item> cities = new HashMap<>();
     private ExecutorService service = Executors.newCachedThreadPool();
-
+    private String uri;
 
     public ParseProcess(String uri) throws IOException, XMLStreamException {
         InputStream is = new FileInputStream(uri);
         reader = XMLInputFactory.newInstance().createXMLStreamReader(is);
+        this.uri = uri;
     };
 
-    private ArrayList<String> getCities() {
-        ArrayList<String> cities = new ArrayList<>();
+    private Map<String, Item> getCities() {
+        Map<String, Item> cities = new HashMap<>();
         for(Item item : itemList) {
-            if(!cities.contains(item.getCity())) {
-                cities.add(item.getCity());
+            if(!cities.containsKey(item.getCity())) {
+                cities.put(item.getCity(), item);
             }
         }
 
@@ -34,11 +37,10 @@ public class ParseProcess {
     }
 
     private void displayCountHousesInEveryCity() {
-        Long start = System.currentTimeMillis();
-
-        ArrayList<String> cities = getCities();
+        long start = System.currentTimeMillis();
+        Map<String, Item> cities = getCities();
         Map<String, int[]> mapBuilders = new HashMap<>();
-        for(String city : cities) {
+        for(String city : cities.keySet()) {
             int[] countHousesForFloor = {0,0,0,0,0,0};
             for(Item item : itemList){
                 if(item.getCity().equals(city)) {
@@ -84,7 +86,7 @@ public class ParseProcess {
 
 
     private void searchDuplicate() {
-        Long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         Map<Item, Integer> duplicate = new HashMap<>();
         duplicate.put(itemList.get(0), 1);
 
@@ -105,22 +107,32 @@ public class ParseProcess {
         System.out.println(current);
     }
 
-    public void startProcess() throws XMLStreamException {
-        Long start = System.currentTimeMillis();
-        while (reader.hasNext()) {
-            int event = reader.next();
-            if (event == XMLEvent.START_ELEMENT &&
-                    "item".equals(reader.getLocalName())) {
-                String city = reader.getAttributeValue(null, "city");
-                String street = reader.getAttributeValue(null, "street");
-                String house = reader.getAttributeValue(null, "house");
-                String floor = reader.getAttributeValue(null, "floor");
-                Item item = new Item(city, street, house, floor);
-                itemList.add(item);
-            }
-        }
-
+    public void startProcess() throws FileNotFoundException/*XMLStreamException*/ {
+        long start = System.currentTimeMillis();
+//        while (reader.hasNext()) {
+//            int event = reader.next();
+//            if (event == XMLEvent.START_ELEMENT &&
+//                    "item".equals(reader.getLocalName())) {
+//                String city = reader.getAttributeValue(null, "city");
+//                String street = reader.getAttributeValue(null, "street");
+//                String house = reader.getAttributeValue(null, "house");
+//                String floor = reader.getAttributeValue(null, "floor");
+//                Item item = new Item(city, street, house, floor);
+//
+//                if(!cities.containsKey(item.getCity())) {
+//                    cities.put(item.getCity(), item);
+//                }
+//
+//                itemList.add(item);
+//            }
+//        }
+//
         startProcessing();
+//        Double current = (System.currentTimeMillis() - start) * 0.001;
+//        System.out.println(current);
+        itemList = new Parser().parse(uri);
+//        searchDuplicate();
+//        displayCountHousesInEveryCity();
         Double current = (System.currentTimeMillis() - start) * 0.001;
         System.out.println(current);
     }
