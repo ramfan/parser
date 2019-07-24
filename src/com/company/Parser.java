@@ -28,16 +28,24 @@ public class Parser {
             String line = scanner.nextLine();
             List<String> candidate = new ArrayList<>();
             if(!line.equals("<root>") && !line.equals("<root/>") ) {
-                Matcher matcher = pattern.matcher(line);
+                line += " ";
+                char[] charArr = line.toCharArray();
 
-                while (matcher.find()) {
-                    candidate.add(matcher.group().replace("\"",""));
-                }
-                if(candidate.size() > 3) {
-                    Item item = new Item(candidate.get(0), candidate.get(1), candidate.get(2), candidate.get(3));
-                    itemsList.add(item);
-                }
+                for (int i = 10; i < charArr.length; i++) {
+                    int count = 0;
+                    if( charArr[i] != '/' &&  charArr[i] != '>' && charArr[i] != '=' && (int)charArr[i] > 255 || (int)charArr[i] == ' ' ){
+                        if(charArr[i] == '"'){
+                            count++;
+                        }
 
+                        if(count % 2 == 0) {
+                            System.out.println(charArr[i]);
+                        }
+
+                    }
+
+                }
+                break;
             }
 
 
