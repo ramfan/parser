@@ -1,8 +1,10 @@
 package com.company;
 
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Parser {
@@ -18,17 +20,15 @@ public class Parser {
         uri = _uri;
     }
 
-    public List<Item> parse() throws FileNotFoundException {
+    public List<Item> parse() throws IOException {
         long start = System.currentTimeMillis();
 
         FileReader file = new FileReader(uri);
-        Scanner scanner = new Scanner(file);
+        BufferedReader scanner = new BufferedReader(file);
 
-
-
-        scanner.nextLine();
-        while(scanner.hasNextLine()) {
-            line = scanner.nextLine();
+        scanner.readLine();
+        while(scanner.ready()) {
+            line = scanner.readLine();
             candidate = new ArrayList<>();
             if(!line.equals("<root>") && !line.equals("<root/>") ) {
                 charArr = line.toCharArray();

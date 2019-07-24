@@ -104,7 +104,7 @@ public class ParseProcess {
         System.out.println(current);
     }
 
-    public void startProcess() throws FileNotFoundException {
+    public void startProcess() throws IOException {
         Parser parser = new Parser(uri);
         itemList = parser.parse();
         cities = parser.getCities();
