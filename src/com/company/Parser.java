@@ -2,18 +2,13 @@ package com.company;
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 public class Parser {
-    private String line = "";
-    private List<String> candidate;
     private List<Item> itemsList = new ArrayList<>();
     private Map<String, Item> cities = new HashMap<>();
-    private String value;
-    private char[] charArr;
     private String uri;
 
     public Parser(String _uri) {
@@ -28,14 +23,14 @@ public class Parser {
 
         scanner.readLine();
         while(scanner.ready()) {
-            line = scanner.readLine();
-            candidate = new ArrayList<>();
+            String line = scanner.readLine();
+            List<String> candidate = new ArrayList<>();
             if(!line.equals("<root>") && !line.equals("<root/>") ) {
-                charArr = line.toCharArray();
-                value = "";
+                char[] charArr = line.toCharArray();
+                String value = new String();
                 for (int i = 10; i < charArr.length; i++) {
                     int count = 0;
-                    if( charArr[i] != '/' &&  charArr[i] != '>' && charArr[i] != '=' && (int)charArr[i] < 64  || (int)charArr[i] > 122){
+                    if( charArr[i] != '/' &&  charArr[i] != '>' && charArr[i] != '=' && (int) charArr[i] < 64  || (int) charArr[i] > 122){
                         if(charArr[i] == '"'){
                             count++;
                         }
@@ -51,7 +46,7 @@ public class Parser {
 
                     if(count % 2 != 0 && !value.equals(" ") && !value.equals("")) {
                         candidate.add(value);
-                        value = "";
+                        value = new String();
                     }
                 }
                 if(candidate.size() == 4) {
