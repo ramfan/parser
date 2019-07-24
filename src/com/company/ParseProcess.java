@@ -17,25 +17,25 @@ public class ParseProcess {
     private List<Item> itemList = new ArrayList<>();
     private ExecutorService service = Executors.newCachedThreadPool();
     private String uri;
+    private Map<String, Item> cities;
 
     public ParseProcess(String _uri) throws IOException, XMLStreamException {
         uri = _uri;
     };
 
-    private Map<String, Item> getCities() {
-        Map<String, Item> cities = new HashMap<>();
-        for(Item item : itemList) {
-            if(!cities.containsKey(item.getCity())) {
-                cities.put(item.getCity(), item);
-            }
-        }
-
-        return cities;
-    }
+//    private Map<String, Item> getCities() {
+//        Map<String, Item> cities = new HashMap<>();
+//        for(Item item : itemList) {
+//            if(!cities.containsKey(item.getCity())) {
+//                cities.put(item.getCity(), item);
+//            }
+//        }
+//
+//        return cities;
+//    }
 
     private void displayCountHousesInEveryCity() {
         long start = System.currentTimeMillis();
-        Map<String, Item> cities = getCities();
         Map<String, int[]> mapBuilders = new HashMap<>();
         for(String city : cities.keySet()) {
             int[] countHousesForFloor = {0,0,0,0,0,0};
@@ -104,8 +104,10 @@ public class ParseProcess {
         System.out.println(current);
     }
 
-    public void startProcess() throws FileNotFoundException/*XMLStreamException*/ {
-        itemList = new Parser().parse(uri);
+    public void startProcess() throws FileNotFoundException {
+        Parser parser = new Parser(uri);
+        itemList = parser.parse();
+        cities = parser.getCities();
         if(itemList.size() > 0){
             startProcessing();
         }

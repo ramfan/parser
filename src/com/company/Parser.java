@@ -3,32 +3,36 @@ package com.company;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class Parser {
+    private String line = "";
+    private List<String> candidate;
+    private List<Item> itemsList = new ArrayList<>();
+    private Map<String, Item> cities = new HashMap<>();
+    private String value;
+    private char[] charArr;
+    private String uri;
 
-    private static final Pattern pattern = Pattern.compile("\"([^\"]+)\"");
+    public Parser(String _uri) {
+        uri = _uri;
+    }
 
-    public List<Item> parse(String uri) throws FileNotFoundException {
+    public List<Item> parse() throws FileNotFoundException {
         long start = System.currentTimeMillis();
 
         FileReader file = new FileReader(uri);
         Scanner scanner = new Scanner(file);
 
-        List<Item> itemsList = new ArrayList<>();
+
 
         scanner.nextLine();
         while(scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            List<String> candidate = new ArrayList<>();
+            line = scanner.nextLine();
+            candidate = new ArrayList<>();
             if(!line.equals("<root>") && !line.equals("<root/>") ) {
-                char[] charArr = line.toCharArray();
-                String value = "";
+                charArr = line.toCharArray();
+                value = "";
                 for (int i = 10; i < charArr.length; i++) {
                     int count = 0;
                     if( charArr[i] != '/' &&  charArr[i] != '>' && charArr[i] != '=' && (int)charArr[i] < 64  || (int)charArr[i] > 122){
@@ -52,6 +56,9 @@ public class Parser {
                 }
                 if(candidate.size() == 4) {
                     Item item = new Item(candidate.get(0), candidate.get(1), candidate.get(2), candidate.get(3));
+                    if(!cities.containsKey(item.getCity())) {
+                        cities.put(item.getCity(), item);
+                    }
                     itemsList.add(item);
                 }
             }
@@ -62,4 +69,8 @@ public class Parser {
         return itemsList;
 
     }
+
+    public Map<String, Item> getCities() {
+        return cities;
+    };
 }
