@@ -30,10 +30,10 @@ public class Item {
     }
 
     public boolean equal(Item item) {
-        return city.equals(item.getCity())
-                || street.equals(item.getStreet())
-                || house.equals(item.getHouse())
-                || floor.equals(item.getFloor());
+        return city == item.getCity()
+                && street == item.getStreet()
+                && house == item.getHouse()
+                && floor == item.getFloor();
     }
 
     public String toString() {
