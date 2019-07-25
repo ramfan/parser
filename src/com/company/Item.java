@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Objects;
+
 public class Item {
     private String city;
     private String street;
@@ -36,6 +38,12 @@ public class Item {
                 && floor == item.getFloor();
     }
 
+    @Override
+    public int hashCode(){
+        return Objects.hash(city, street, house, floor);
+    }
+
+    @Override
     public String toString() {
         return city + " " + street + " " + house + " " + floor;
     }
