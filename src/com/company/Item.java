@@ -31,11 +31,17 @@ public class Item {
         return floor;
     }
 
-    public boolean equal(Item item) {
-        return city == item.getCity()
-                && street == item.getStreet()
-                && house == item.getHouse()
-                && floor == item.getFloor();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (getClass() != o.getClass()) return false;
+
+        Item item = (Item)o;
+
+        return Objects.equals(city, item.getCity())
+                && Objects.equals(street, item.getStreet())
+                && Objects.equals(house, item.getHouse())
+                && Objects.equals(floor, item.getFloor());
     }
 
     @Override

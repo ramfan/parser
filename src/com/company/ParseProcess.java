@@ -92,12 +92,17 @@ public class ParseProcess {
             if(duplicate.containsKey(candidate)) {
                 Integer count = duplicate.get(candidate);
                 duplicate.put(candidate, ++count);
+            } else {
+                duplicate.put(candidate, 1);
             }
         }
 
         if(duplicate.size() > 1 || duplicate.get(itemList.get(0)) > 1 ) {
             for(Map.Entry<Item, Integer> item : duplicate.entrySet() ) {
-                System.out.println(item.getKey().toString() + " - " + item.getValue());
+                if( item.getValue() > 1) {
+                    System.out.println(item.getKey().toString() + " - " + item.getValue());
+                }
+
             }
         }
         Double current = (System.currentTimeMillis() - start) * 0.001;
