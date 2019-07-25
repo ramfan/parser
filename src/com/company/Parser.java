@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class Parser {
-    private List<Item> itemsList = new ArrayList<>();
-    private Map<String, Item> cities = new HashMap<>();
+    private List<Item> itemsList = new ArrayList<>(Main.MAX_SIZE);
+    private Map<String, Item> cities = new HashMap<>(Main.COUNT_CITIES);
     private String uri;
 
     public Parser(String _uri) {

@@ -13,30 +13,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ParseProcess {
-    private XMLStreamReader reader;
+
     private List<Item> itemList = new ArrayList<>();
-    private ExecutorService service = Executors.newCachedThreadPool();
     private String uri;
     private Map<String, Item> cities;
 
-    public ParseProcess(String _uri) throws IOException, XMLStreamException {
+    public ParseProcess(String _uri) {
         uri = _uri;
-    };
-
-//    private Map<String, Item> getCities() {
-//        Map<String, Item> cities = new HashMap<>();
-//        for(Item item : itemList) {
-//            if(!cities.containsKey(item.getCity())) {
-//                cities.put(item.getCity(), item);
-//            }
-//        }
-//
-//        return cities;
-//    }
+    }
 
     private void displayCountHousesInEveryCity() {
         long start = System.currentTimeMillis();
-        Map<String, int[]> mapBuilders = new HashMap<>();
+        Map<String, int[]> mapBuilders = new HashMap<>(Main.COUNT_CITIES);
         for(String city : cities.keySet()) {
             int[] countHousesForFloor = {0,0,0,0,0,0};
             for(Item item : itemList){
@@ -84,7 +72,7 @@ public class ParseProcess {
 
     private void searchDuplicate() {
         long start = System.currentTimeMillis();
-        Map<Item, Integer> duplicate = new HashMap<>();
+        Map<Item, Integer> duplicate = new HashMap<>(Main.MAX_SIZE);
         duplicate.put(itemList.get(0), 1);
 
         for(int i = 1; i < itemList.size(); i++) {
@@ -97,14 +85,14 @@ public class ParseProcess {
             }
         }
 
-        if(duplicate.size() > 1 || duplicate.get(itemList.get(0)) > 1 ) {
-            for(Map.Entry<Item, Integer> item : duplicate.entrySet() ) {
-                if( item.getValue() > 1) {
-                    System.out.println(item.getKey().toString() + " - " + item.getValue());
-                }
 
+        for(Map.Entry<Item, Integer> item : duplicate.entrySet() ) {
+            if( item.getValue() > 1) {
+                System.out.println(item.getKey().toString() + " - " + item.getValue());
             }
+
         }
+
         Double current = (System.currentTimeMillis() - start) * 0.001;
         System.out.println(current);
     }
@@ -121,6 +109,7 @@ public class ParseProcess {
     }
 
     private void startProcessing() {
+        ExecutorService service = Executors.newFixedThreadPool(1);
         service.submit(task1);
         service.submit(task2);
         service.shutdown();
