@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Parser {
-    private List<Item> itemsList = new ArrayList<>(Main.MAX_SIZE);
+    private Map<Integer, Item> itemsList = new HashMap<>(Main.MAX_SIZE);
     private Map<String, Item> cities = new HashMap<>(Main.COUNT_CITIES);
     private String uri;
 
@@ -15,12 +15,12 @@ public class Parser {
         uri = _uri;
     }
 
-    public List<Item> parse() throws IOException {
+    public Map<Integer, Item> parse() throws IOException {
         long start = System.currentTimeMillis();
 
         FileReader file = new FileReader(uri);
         BufferedReader scanner = new BufferedReader(file);
-
+        Integer countItems = 0;
         scanner.readLine();
         while(scanner.ready()) {
             String line = scanner.readLine();
@@ -50,11 +50,11 @@ public class Parser {
                     }
                 }
                 if(candidate.size() == 4) {
-                    Item item = new Item(candidate.get(0), candidate.get(1), candidate.get(2), candidate.get(3));
+                    Item item = new Item(candidate.get(0), candidate.get(1), candidate.get(2), Integer.parseInt(candidate.get(3)));
                     if(!cities.containsKey(item.getCity())) {
                         cities.put(item.getCity(), item);
                     }
-                    itemsList.add(item);
+                    itemsList.put(countItems++, item);
                 }
             }
 
@@ -67,5 +67,5 @@ public class Parser {
 
     public Map<String, Item> getCities() {
         return cities;
-    };
+    }
 }

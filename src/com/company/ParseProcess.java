@@ -1,22 +1,16 @@
 package com.company;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.XMLEvent;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ParseProcess {
 
-    private List<Item> itemList = new ArrayList<>();
+    private Map<Integer, Item> itemList = new HashMap<>(Main.MAX_SIZE);
     private String uri;
-    private Map<String, Item> cities;
+    private Map<String, Item> cities = new HashMap<>(Main.COUNT_CITIES);
+    private ExecutorService service = Executors.newCachedThreadPool();
 
     public ParseProcess(String _uri) {
         uri = _uri;
@@ -24,33 +18,28 @@ public class ParseProcess {
 
     private void displayCountHousesInEveryCity() {
         long start = System.currentTimeMillis();
-        Map<String, int[]> mapBuilders = new HashMap<>(Main.COUNT_CITIES);
-        for(String city : cities.keySet()) {
-            int[] countHousesForFloor = {0,0,0,0,0,0};
-            for(Item item : itemList){
-                if(item.getCity().equals(city)) {
-                    switch (item.getFloor()) {
-                        case "1":
+        for(Map.Entry<String, Item> city : cities.entrySet()) {
+            int[] countHousesForFloor = {0,0,0,0,0};
+            for( Map.Entry<Integer, Item> item: itemList.entrySet()){
+                if(item.getValue().getCity().equals(city.getKey())) {
+                    switch (item.getValue().getFloor()) {
+                        case 1:
                             countHousesForFloor[0]++;
                             break;
-                        case "2":
+                        case 2:
                             countHousesForFloor[1]++;
                             break;
 
-                        case "3":
+                        case 3:
                             countHousesForFloor[2]++;
                             break;
 
-                        case "4":
+                        case 4:
                             countHousesForFloor[3]++;
                             break;
 
-                        case "5":
+                        case 5:
                             countHousesForFloor[4]++;
-                            break;
-
-                        case "6":
-                            countHousesForFloor[5]++;
                             break;
 
                     }
@@ -58,14 +47,10 @@ public class ParseProcess {
 
 
             }
-            mapBuilders.put(city, countHousesForFloor);
+
+            System.out.println(city.getKey() + " - " + Arrays.toString(countHousesForFloor));
         }
 
-        for(Map.Entry<String, int[]> city : mapBuilders.entrySet()) {
-            System.out.println(city.getKey() + " - " + Arrays.toString(city.getValue()));
-        }
-        Double current = (System.currentTimeMillis() - start) * 0.001;
-        System.out.println(current);
     }
 
 
@@ -93,8 +78,6 @@ public class ParseProcess {
 
         }
 
-        Double current = (System.currentTimeMillis() - start) * 0.001;
-        System.out.println(current);
     }
 
     public void startProcess() throws IOException {
@@ -109,9 +92,11 @@ public class ParseProcess {
     }
 
     private void startProcessing() {
-        ExecutorService service = Executors.newFixedThreadPool(1);
+        long start = System.currentTimeMillis();
         service.submit(task1);
         service.submit(task2);
+        System.out.println((System.currentTimeMillis() - start) * 0.001);
+
         service.shutdown();
     }
 

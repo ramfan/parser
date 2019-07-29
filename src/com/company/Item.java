@@ -6,9 +6,9 @@ public class Item {
     private String city;
     private String street;
     private String house;
-    private String floor;
+    private int floor;
 
-    public Item(String _city, String _street, String _house, String _floor) {
+    public Item(String _city, String _street, String _house, int _floor) {
         city = _city;
         street = _street;
         house = _house;
@@ -27,7 +27,7 @@ public class Item {
         return house;
     }
 
-    public String getFloor() {
+    public int getFloor() {
         return floor;
     }
 
